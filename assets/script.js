@@ -71,4 +71,100 @@ $(document).ready(function() {
       displayHour = hour;
       ampm = "am";
     }
-    
+     // populate timeBox with time
+     $timeBoxSpn.text(`${displayHour} ${ampm}`);
+     $rowDiv.append($col2TimeDiv);
+     $col2TimeDiv.append($timeBoxSpn);
+     // STOP building Time box portion of row
+ 
+     // START building input portion of row
+     let $dailyPlanSpn = $('<input>');
+      $dailyPlanSpn.attr('id',`input-${index}`);
+     $dailyPlanSpn.attr('hour-index',index);
+     $dailyPlanSpn.attr('type','text');
+     $dailyPlanSpn.attr('class','dailyPlan');
+ 
+     // access index from data array for hour 
+     $dailyPlanSpn.val( planTextArr[index] );
+     
+     // create col to control width
+     let $col9IptDiv = $('<div>');
+     $col9IptDiv.addClass('col-md-9');
+ 
+     // add column width and row component to row
+     $rowDiv.append($col9IptDiv);
+     $col9IptDiv.append($dailyPlanSpn);
+     // STOP building Time box portion of row
+ 
+     // START building save portion of row
+     let $col1SaveDiv = $('<div>');
+     $col1SaveDiv.addClass('col-md-1');
+ 
+     let $saveBtn = $('<i>');
+     $saveBtn.attr('id',`saveid-${index}`);
+     $saveBtn.attr('save-id',index);
+     $saveBtn.attr('class',"far fa-save saveIcon");
+     
+     // add col width and row component to row
+     $rowDiv.append($col1SaveDiv);
+     $col1SaveDiv.append($saveBtn);
+     // STOP building save portion of row
+ 
+     // set row color based on time
+     updateRowColor($rowDiv, hour);
+     
+     // add row to planner container
+     $plannerDiv.append($rowDiv);
+   };
+ 
+   // function to update row color
+   function updateRowColor ($hourRow,hour) { 
+ 
+     if (test) { console.log("rowColor ",nowHour24, hour); }
+ 
+     if ( hour < nowHour24) {
+       if (test) { console.log("lessThan"); }
+       $hourRow.css("background-color","lightgrey")
+     } else if ( hour > nowHour24) {
+       if (test) { console.log("greaterthan"); }
+       $hourRow.css("background-color","green")
+     } else {
+       if (test) { console.log("eqaul"); }
+       $hourRow.css("background-color","red")
+     }
+   };
+ 
+   // saves to local storage
+   // function to listen for user clicks on plan area
+   $(document).on('click','i', function(event) {
+     event.preventDefault();  
+ 
+     if (test) { console.log('click pta before '+ planTextArr); }
+ 
+     let $index = $(this).attr('save-id');
+ 
+     let inputId = '#input-'+$index;
+     let $value = $(inputId).val();
+ 
+     planTextArr[$index] = $value;
+ 
+ 
+     if (test) { console.log('value ', $value); }
+     if (test) { console.log('index ', $index); }
+     if (test) { console.log('click pta after '+ planTextArr); }
+ 
+     // remove shawdow pulse class
+     $(`#saveid-${$index}`).removeClass('shadowPulse');
+     localStorage.setItem("storedPlans", JSON.stringify(planTextArr));
+   });  
+   
+   // function to color save button on change of input
+   $(document).on('change','input', function(event) {
+     event.preventDefault();  
+     if (test) { console.log('onChange'); }
+     if (test) { console.log('id', $(this).attr('hour-index')); }
+ 
+     // neeed to check for save button
+     let i = $(this).attr('hour-index');
+   });
+ });
